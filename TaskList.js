@@ -28,6 +28,15 @@ class TaskList extends Component {
     };
   }
 
+  onDone(todo) {
+    console.log('task was completed: ', todo.task);
+    const filterTodos =
+      this.state.todos.filter((filterTodo) => {
+        return filterTodo !== todo;
+      });
+      this.setState({ todos:filterTodos });
+  }
+
   _onAdd(task){
     console.log('New task added: ', task);
     this.state.todos.push({
@@ -50,14 +59,18 @@ class TaskList extends Component {
           data={this.state.todos}
           extraData={this.state}
           keyExtractor={item => item.id}
-          renderItem={({item}) => <TaskRow todo={item} />}
+          renderItem={({item}) =>
+          <TaskRow
+            todo={item}
+            onDone={this.onDone.bind(this)}
+            />}
         />
 
       <TouchableHighlight
         onPress={() => {
             navigate('TaskForm', {
+              onAdd: this._onAdd.bind(this),
               onCancel: this._onCancel.bind(this),
-              onAdd: this._onAdd.bind(this)
             });
           }
         }
