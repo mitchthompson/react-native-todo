@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, } from 'react-native';
+import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
 import PropTypes from 'prop-types';
 
 class TaskRow extends Component {
@@ -7,6 +7,11 @@ class TaskRow extends Component {
     return(
       <View style={styles.container}>
         <Text style={styles.label}>{this.props.todo.task}</Text>
+        <TouchableHighlight
+          style={styles.doneButton}
+        >
+          <Text>Done</Text>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -36,5 +41,10 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 20,
     fontWeight: '300',
-  }
+  },
+  doneButton: {
+    borderRadius: 5,
+    backgroundColor: '#EAEAEA',
+    padding: 5,
+  },
 });

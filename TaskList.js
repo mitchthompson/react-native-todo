@@ -4,26 +4,63 @@ import {
   FlatList,
   TouchableHighlight,
   Text,
-  StyleSheet
+  Alert,
+  StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import TaskRow from './TaskRow';
 
 class TaskList extends Component {
+  static navigationOptions = {
+    title: 'Your Tasks',
+  };
   constructor(props){
     super(props);
+    this.state = {
+      todos: [
+        {
+          task: 'Learn React Native',
+        },
+        {
+          task: 'Learn Redux',
+        },
+      ],
+    };
   }
+
+  _onAdd(task){
+    console.log('New task added: ', task);
+    this.state.todos.push({
+      task: task,
+    });
+    this.setState({ todos: this.state.todos });
+    this.props.navigation.navigate('TaskList');
+  }
+
+  _onCancel(){
+    //console.log("onCancel started...");
+    this.props.navigation.navigate('TaskList');
+  }
+
   render() {
+    const { navigate } = this.props.navigation;
     return(
       <View style={styles.container}>
         <FlatList
-          data={this.props.todos}
+          data={this.state.todos}
+          extraData={this.state}
           keyExtractor={item => item.id}
           renderItem={({item}) => <TaskRow todo={item} />}
         />
 
       <TouchableHighlight
-        onPress={this.props.onAddStarted}
+        onPress={() => {
+            navigate('TaskForm', {
+              onCancel: this._onCancel.bind(this),
+              onAdd: this._onAdd.bind(this)
+            });
+          }
+        }
         style={styles.button}
       >
         <Text
@@ -36,11 +73,6 @@ class TaskList extends Component {
     );
   }
 }
-
-TaskList.propTypes = {
-  onAddStarted: PropTypes.func.isRequired,
-  todos: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
 
 export default TaskList;
 
