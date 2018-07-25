@@ -1,34 +1,16 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, } from 'react-native';
+import { createStackNavigator } from 'react-navigation';
 import TaskList from './TaskList';
+import TaskForm from './TaskForm';
 
-export default class ToDo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      todos: [
-        {
-          task: 'Learn React Native',
-          id: '1',
-        },
-        {
-          task: 'Learn Redux',
-          id: '2',
-        },
-      ]
-    };
-  }
+const App = createStackNavigator({
+  TaskList: {
+    screen: TaskList,
+  },
+  TaskForm: {
+    screen: TaskForm,
+  },
+});
 
-  onAddStarted() {
-    console.log('on add started');
-  }
-
-  render() {
-    return (
-        <TaskList
-          onAddStarted={this.onAddStarted.bind(this)}
-          todos={this.state.todos}
-        />
-    );
-  }
-}
+export default App;

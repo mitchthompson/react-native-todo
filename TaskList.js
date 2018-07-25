@@ -4,26 +4,76 @@ import {
   FlatList,
   TouchableHighlight,
   Text,
-  StyleSheet
+  Alert,
+  StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import TaskRow from './TaskRow';
 
 class TaskList extends Component {
+  static navigationOptions = {
+    title: 'Your Tasks',
+  };
   constructor(props){
     super(props);
+    this.state = {
+      todos: [
+        {
+          task: 'Learn React Native',
+        },
+        {
+          task: 'Learn Redux',
+        },
+      ],
+    };
   }
+
+  onDone(todo) {
+    console.log('task was completed: ', todo.task);
+    const filterTodos =
+      this.state.todos.filter((filterTodo) => {
+        return filterTodo !== todo;
+      });
+      this.setState({ todos:filterTodos });
+  }
+
+  _onAdd(task){
+    console.log('New task added: ', task);
+    this.state.todos.push({
+      task: task,
+    });
+    this.setState({ todos: this.state.todos });
+    this.props.navigation.navigate('TaskList');
+  }
+
+  _onCancel(){
+    //console.log("onCancel started...");
+    this.props.navigation.navigate('TaskList');
+  }
+
   render() {
+    const { navigate } = this.props.navigation;
     return(
       <View style={styles.container}>
         <FlatList
-          data={this.props.todos}
+          data={this.state.todos}
+          extraData={this.state}
           keyExtractor={item => item.id}
-          renderItem={({item}) => <TaskRow todo={item} />}
+          renderItem={({item}) =>
+          <TaskRow
+            todo={item}
+            onDone={this.onDone.bind(this)}
+            />}
         />
 
       <TouchableHighlight
-        onPress={this.props.onAddStarted}
+        onPress={() => {
+            navigate('TaskForm', {
+              onAdd: this._onAdd.bind(this),
+              onCancel: this._onCancel.bind(this),
+            });
+          }
+        }
         style={styles.button}
       >
         <Text
@@ -36,11 +86,6 @@ class TaskList extends Component {
     );
   }
 }
-
-TaskList.propTypes = {
-  onAddStarted: PropTypes.func.isRequired,
-  todos: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
 
 export default TaskList;
 
